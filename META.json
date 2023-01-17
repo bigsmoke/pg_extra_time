@@ -1,0 +1,54 @@
+{
+    "name": "pg_extra_time",
+    "tags": [
+        "plpgsql",
+        "function",
+        "functions",
+        "date",
+        "datetime",
+        "interval",
+        "time"
+    ],
+    "license": "postgresql",
+    "prereqs": {
+        "test": {
+            "requires": {
+                "pgtap": 0
+            }
+        },
+        "develop": {
+            "recommends": {
+                "pg_readme": 0
+            }
+        }
+    },
+    "version": "0.4.0",
+    "abstract": "Some date-time functions and operators that, according to the extension author, ought to be part of the PostgreSQL standard distribution.",
+    "provides": {
+        "pg_extra_time": {
+            "file": "pg_extra_time--0.4.0.sql",
+            "docfile": "README.md",
+            "version": "0.4.0"
+        }
+    },
+    "meta-spec": {
+        "url": "https://pgxn.org/spec/",
+        "version": "1.0.0"
+    },
+    "resources": {
+        "homepage": "https://blog.bigsmoke.us/tag/pg_extra_time",
+        "bugtracker": {
+            "web": "https://github.com/bigsmoke/pg_extra_time/issues"
+        },
+        "repository": {
+            "url": "https://github.com/bigsmoke/pg_extra_time.git",
+            "web": "https://github.com/bigsmoke/pg_extra_time",
+            "type": "git"
+        }
+    },
+    "maintainer": [
+        "Rowan Rodrik van der Molen <rowan@bigsmoke.us>"
+    ],
+    "description": "The pg_extra_time PostgreSQL extension contains some date time functions and operators that, in the opinion of the extension author, ought to be part of the PostgreSQL standard distribution.",
+    "generated_by": "`select pg_extra_time_meta_pgxn()`"
+}
