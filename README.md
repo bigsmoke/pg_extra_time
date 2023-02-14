@@ -1,8 +1,8 @@
 ---
 pg_extension_name: pg_extra_time
-pg_extension_version: 0.4.0
-pg_readme_generated_at: 2023-01-18 09:34:50.236633+00
-pg_readme_version: 0.4.0
+pg_extension_version: 0.5.0
+pg_readme_generated_at: 2023-02-14 21:25:35.348306+00
+pg_readme_version: 0.5.6
 ---
 
 # `pg_extra_time` PostgreSQL extension
@@ -12,6 +12,27 @@ The `pg_extra_time` PostgreSQL extension contains some date time functions and o
 ## Object reference
 
 ### Routines
+
+#### Function: `current_timezone()`
+
+Returns a `pg_timezone_names` record with the currently active timezone.
+
+Function return type: `pg_timezone_names`
+
+Function attributes: `STABLE`, `PARALLEL SAFE`
+
+Function-local settings:
+
+  *  `SET pg_readme.include_this_routine_definition TO true`
+
+```sql
+CREATE OR REPLACE FUNCTION public.current_timezone()
+ RETURNS pg_timezone_names
+ LANGUAGE sql
+ STABLE PARALLEL SAFE
+ SET "pg_readme.include_this_routine_definition" TO 'true'
+RETURN (SELECT ROW(pg_timezone_names.name, pg_timezone_names.abbrev, pg_timezone_names.utc_offset, pg_timezone_names.is_dst)::pg_timezone_names AS "row" FROM pg_timezone_names WHERE (pg_timezone_names.name = current_setting('timezone'::text)))
+```
 
 #### Function: `date_part_parts (text, text, timestamp with time zone)`
 
@@ -46,7 +67,7 @@ Function-local settings:
 
   *  `SET pg_readme.include_this_routine_definition TO true`
 
-```
+```sql
 CREATE OR REPLACE FUNCTION public.date_part_parts(text, text, timestamp with time zone)
  RETURNS integer
  LANGUAGE sql
@@ -73,7 +94,7 @@ Function-local settings:
 
   *  `SET pg_readme.include_this_routine_definition TO true`
 
-```
+```sql
 CREATE OR REPLACE FUNCTION public.extract_days(interval)
  RETURNS integer
  LANGUAGE sql
@@ -114,7 +135,7 @@ Function-local settings:
 
   *  `SET pg_readme.include_this_routine_definition TO true`
 
-```
+```sql
 CREATE OR REPLACE FUNCTION public.extract_interval(tstzrange)
  RETURNS interval
  LANGUAGE sql
@@ -144,6 +165,8 @@ Function attributes: `IMMUTABLE`, `LEAKPROOF`, `RETURNS NULL ON NULL INPUT`, `PA
 
 #### Function: `modulo (tstzrange, interval)`
 
+As you would expect from a modulo operator, this function returns the remainder of the given datetime range after dividing it in as many of the given whole intervals as possible.
+
 Function arguments:
 
 | Arg. # | Arg. mode  | Argument name                                                     | Argument type                                                        | Default expression  |
@@ -159,7 +182,7 @@ Function-local settings:
 
   *  `SET pg_readme.include_this_routine_definition TO true`
 
-```
+```sql
 CREATE OR REPLACE FUNCTION public.modulo(tstzrange, interval)
  RETURNS interval
  LANGUAGE sql
@@ -174,7 +197,7 @@ from
 $function$
 ```
 
-#### Function: `pg_extra_time_meta_pgxn ()`
+#### Function: `pg_extra_time_meta_pgxn()`
 
 Returns the JSON meta data that has to go into the `META.json` file needed for PGXN—PostgreSQL Extension Network—packages.
 
@@ -190,7 +213,7 @@ Function-local settings:
 
   *  `SET search_path TO public, pg_temp`
 
-#### Function: `pg_extra_time_readme ()`
+#### Function: `pg_extra_time_readme()`
 
 Fire up the `pg_readme` extension to generate a thorough README for this extension, based on the `pg_catalog` and the `COMMENT` objects found therein.
 
@@ -203,14 +226,14 @@ Function-local settings:
   *  `SET pg_readme.include_routine_definitions_like TO {test__%}`
   *  `SET pg_readme.readme_url TO https://github.com/bigsmoke/pg_extra_time/blob/master/README.md`
 
-#### Procedure: `test__date_part_parts ()`
+#### Procedure: `test__date_part_parts()`
 
 Procedure-local settings:
 
   *  `SET pg_readme.include_this_routine_definition TO true`
   *  `SET plpgsql.check_asserts TO true`
 
-```
+```sql
 CREATE OR REPLACE PROCEDURE public.test__date_part_parts()
  LANGUAGE plpgsql
  SET "pg_readme.include_this_routine_definition" TO 'true'
@@ -224,14 +247,14 @@ end;
 $procedure$
 ```
 
-#### Procedure: `test__extract_days_from_interval ()`
+#### Procedure: `test__extract_days_from_interval()`
 
 Procedure-local settings:
 
   *  `SET pg_readme.include_this_routine_definition TO true`
   *  `SET plpgsql.check_asserts TO true`
 
-```
+```sql
 CREATE OR REPLACE PROCEDURE public.test__extract_days_from_interval()
  LANGUAGE plpgsql
  SET "pg_readme.include_this_routine_definition" TO 'true'
@@ -245,14 +268,14 @@ end;
 $procedure$
 ```
 
-#### Procedure: `test__extract_days_from_tstzrange ()`
+#### Procedure: `test__extract_days_from_tstzrange()`
 
 Procedure-local settings:
 
   *  `SET pg_readme.include_this_routine_definition TO true`
   *  `SET plpgsql.check_asserts TO true`
 
-```
+```sql
 CREATE OR REPLACE PROCEDURE public.test__extract_days_from_tstzrange()
  LANGUAGE plpgsql
  SET "pg_readme.include_this_routine_definition" TO 'true'
@@ -268,14 +291,14 @@ end;
 $procedure$
 ```
 
-#### Procedure: `test__extract_interval ()`
+#### Procedure: `test__extract_interval()`
 
 Procedure-local settings:
 
   *  `SET pg_readme.include_this_routine_definition TO true`
   *  `SET plpgsql.check_asserts TO true`
 
-```
+```sql
 CREATE OR REPLACE PROCEDURE public.test__extract_interval()
  LANGUAGE plpgsql
  SET "pg_readme.include_this_routine_definition" TO 'true'
@@ -308,14 +331,14 @@ end;
 $procedure$
 ```
 
-#### Procedure: `test__modulo__tsttzrange__interval ()`
+#### Procedure: `test__modulo__tsttzrange__interval()`
 
 Procedure-local settings:
 
   *  `SET pg_readme.include_this_routine_definition TO true`
   *  `SET plpgsql.check_asserts TO true`
 
-```
+```sql
 CREATE OR REPLACE PROCEDURE public.test__modulo__tsttzrange__interval()
  LANGUAGE plpgsql
  SET "pg_readme.include_this_routine_definition" TO 'true'
@@ -338,4 +361,4 @@ $procedure$
 
 ## Colophon
 
-This `README.md` for the `pg_extra_time` `extension` was automatically generated using the [`pg_readme`](https://github.com/bigsmoke/pg_readme) PostgreSQL extension.
+This `README.md` for the `pg_extra_time` extension was automatically generated using the [`pg_readme`](https://github.com/bigsmoke/pg_readme) PostgreSQL extension.
