@@ -22,13 +22,13 @@
             }
         }
     },
-    "version": "0.5.0",
+    "version": "0.6.0",
     "abstract": "Some date-time functions and operators that, according to the extension author, ought to be part of the PostgreSQL standard distribution.",
     "provides": {
         "pg_extra_time": {
             "file": "pg_extra_time--0.4.0.sql",
             "docfile": "README.md",
-            "version": "0.5.0"
+            "version": "0.6.0"
         }
     },
     "meta-spec": {

@@ -1,8 +1,8 @@
 ---
 pg_extension_name: pg_extra_time
-pg_extension_version: 0.5.0
-pg_readme_generated_at: 2023-02-14 21:25:35.348306+00
-pg_readme_version: 0.5.6
+pg_extension_version: 0.6.0
+pg_readme_generated_at: 2023-02-19 23:25:37.013169+00
+pg_readme_version: 0.5.4
 ---
 
 # `pg_extra_time` PostgreSQL extension
@@ -75,6 +75,32 @@ CREATE OR REPLACE FUNCTION public.date_part_parts(text, text, timestamp with tim
  SET "pg_readme.include_this_routine_definition" TO 'true'
 RETURN date_part($2, ((date_trunc($1, $3) + (format('1 %s'::text, $1))::interval) - date_trunc($1, $3)))
 ```
+
+#### Function: `each_subperiod (tstzrange, interval, integer)`
+
+Divide the given `dividend$` into `divisor$`-sized chunks.
+
+The remainder is rounded:
+
+- up, to a complete `divisor$`, if `round_remainder$ >= 1`;
+- down, discarding the remainder, if `round_remainder$ <= 1`; or
+- not at all and kept as the remainder, if `round_remainder = 0`.
+
+See the [`test__each_subperiod`](#routine-test__each_subperiod) routine for
+examples.
+
+Function arguments:
+
+| Arg. # | Arg. mode  | Argument name                                                     | Argument type                                                        | Default expression  |
+| ------ | ---------- | ----------------------------------------------------------------- | -------------------------------------------------------------------- | ------------------- |
+|   `$1` |       `IN` | `dividend$`                                                       | `tstzrange`                                                          |  |
+|   `$2` |       `IN` | `divisor$`                                                        | `interval`                                                           |  |
+|   `$3` |       `IN` | `round_remainder$`                                                | `integer`                                                            | `0` |
+|   `$4` |    `TABLE` | `quotient`                                                        | `tstzrange`                                                          |  |
+
+Function return type: `TABLE(quotient tstzrange)`
+
+Function attributes: `IMMUTABLE`, `LEAKPROOF`, `PARALLEL SAFE`, ROWS 1000
 
 #### Function: `extract_days (interval)`
 
@@ -243,6 +269,83 @@ begin
     assert date_part_parts('year', 'days', make_date(2022,8,23)) = 365;
     assert date_part_parts('year', 'days', make_date(2024,8,23)) = 366;
     assert date_part_parts('month', 'days', make_date(2024,2,12)) = 29;
+end;
+$procedure$
+```
+
+#### Procedure: `test__each_subperiod()`
+
+Procedure-local settings:
+
+  *  `SET search_path TO public, pg_temp`
+  *  `SET pg_readme.include_this_routine_definition TO true`
+
+```sql
+CREATE OR REPLACE PROCEDURE public.test__each_subperiod()
+ LANGUAGE plpgsql
+ SET search_path TO 'public', 'pg_temp'
+ SET "pg_readme.include_this_routine_definition" TO 'true'
+AS $procedure$
+begin
+    assert (
+            select
+                array_agg(quotient)
+            from
+                each_subperiod('[2023-01-01,2023-04-01)'::tstzrange, '1 month'::interval, 0)
+        ) = '{
+            "[2023-01-01, 2023-02-01)",
+            "[2023-02-01, 2023-03-01)",
+            "[2023-03-01, 2023-04-01)"
+        }'::tstzrange[];
+
+    assert (
+            select
+                array_agg(quotient)
+            from
+                each_subperiod('[2023-01-01,2023-04-02)'::tstzrange, '1 month'::interval, 0)
+        ) = '{
+            "[2023-01-01, 2023-02-01)",
+            "[2023-02-01, 2023-03-01)",
+            "[2023-03-01, 2023-04-01)",
+            "[2023-04-01, 2023-04-02)"
+        }'::tstzrange[];
+
+    assert (
+            select
+                array_agg(quotient)
+            from
+                each_subperiod('[2023-01-01,2023-04-02)'::tstzrange, '1 month'::interval, 1)
+        ) = '{
+            "[2023-01-01, 2023-02-01)",
+            "[2023-02-01, 2023-03-01)",
+            "[2023-03-01, 2023-04-01)",
+            "[2023-04-01, 2023-05-01)"
+        }'::tstzrange[];
+
+    assert (
+            select
+                array_agg(quotient)
+            from
+                each_subperiod('[2023-01-01,2023-01-02)'::tstzrange, '1 month'::interval, 1)
+        ) = '{"[2023-01-01, 2023-02-01)"}'::tstzrange[];
+
+    assert (
+            select
+                array_agg(quotient)
+            from
+                each_subperiod('[2023-01-01,2023-04-02)'::tstzrange, '1 month'::interval, -1)
+        ) = '{
+            "[2023-01-01, 2023-02-01)",
+            "[2023-02-01, 2023-03-01)",
+            "[2023-03-01, 2023-04-01)"
+        }'::tstzrange[];
+
+    assert (
+            select
+                count(*)
+            from
+                each_subperiod('[2023-01-01,2023-01-31)'::tstzrange, '1 month'::interval, -1)
+        ) = 0;
 end;
 $procedure$
 ```
