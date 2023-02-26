@@ -1,8 +1,8 @@
 ---
 pg_extension_name: pg_extra_time
-pg_extension_version: 0.6.0
-pg_readme_generated_at: 2023-02-19 23:25:37.013169+00
-pg_readme_version: 0.5.4
+pg_extension_version: 0.7.0
+pg_readme_generated_at: 2023-02-26 19:40:05.887544+00
+pg_readme_version: 0.5.6
 ---
 
 # `pg_extra_time` PostgreSQL extension
@@ -186,6 +186,54 @@ Function arguments:
 |   `$2` |       `IN` |                                                                   | `interval[]`                                                         |  |
 
 Function return type: `interval`
+
+Function attributes: `IMMUTABLE`, `LEAKPROOF`, `RETURNS NULL ON NULL INPUT`, `PARALLEL SAFE`
+
+#### Function: `make_tsrange (timestamp without time zone, interval, text)`
+
+Build a `tsrange` from a given timestamp from or until the given interval.
+
+This function will do the right thing when confronted with negative intervals.
+
+The function name is chosen for consistency with (some of) PostgreSQL built-in
+date/time functions.  I would have preferred to call it plainly `tsrange()`,
+but that would require users of this extensions to have to become explicit when
+calling the existing `tsrange(text)` constructor while relying on an explicit
+cast of `unknown` to `text`.
+
+Function arguments:
+
+| Arg. # | Arg. mode  | Argument name                                                     | Argument type                                                        | Default expression  |
+| ------ | ---------- | ----------------------------------------------------------------- | -------------------------------------------------------------------- | ------------------- |
+|   `$1` |       `IN` |                                                                   | `timestamp without time zone`                                        |  |
+|   `$2` |       `IN` |                                                                   | `interval`                                                           |  |
+|   `$3` |       `IN` |                                                                   | `text`                                                               | `'[)'::text` |
+
+Function return type: `tsrange`
+
+Function attributes: `IMMUTABLE`, `LEAKPROOF`, `RETURNS NULL ON NULL INPUT`, `PARALLEL SAFE`
+
+#### Function: `make_tstzrange (timestamp with time zone, interval, text)`
+
+Build a `tstzrange` from a given timestamp from or until the given interval.
+
+This function will do the right thing when confronted with negative intervals.
+
+The function name is chosen for consistency with (some of) PostgreSQL built-in
+date/time functions.  I would have preferred to call it plainly `tstzrange()`,
+but that would require users of this extensions to have to become explicit when
+calling the existing `tsrange(text)` constructor while relying on an explicit
+cast of `unknown` to `text`.
+
+Function arguments:
+
+| Arg. # | Arg. mode  | Argument name                                                     | Argument type                                                        | Default expression  |
+| ------ | ---------- | ----------------------------------------------------------------- | -------------------------------------------------------------------- | ------------------- |
+|   `$1` |       `IN` |                                                                   | `timestamp with time zone`                                           |  |
+|   `$2` |       `IN` |                                                                   | `interval`                                                           |  |
+|   `$3` |       `IN` |                                                                   | `text`                                                               | `'[)'::text` |
+
+Function return type: `tstzrange`
 
 Function attributes: `IMMUTABLE`, `LEAKPROOF`, `RETURNS NULL ON NULL INPUT`, `PARALLEL SAFE`
 
@@ -430,6 +478,62 @@ begin
             tstzrange('2022-03-01', '2022-05-8'),
             array[interval '1 month', interval '1 day', interval '1 hour']
         ) = interval '2 month 1 week';
+end;
+$procedure$
+```
+
+#### Procedure: `test__make_tsrange()`
+
+Procedure-local settings:
+
+  *  `SET search_path TO public, pg_temp`
+  *  `SET plpgsql.check_asserts TO true`
+  *  `SET pg_readme.include_this_routine_definition TO true`
+
+```sql
+CREATE OR REPLACE PROCEDURE public.test__make_tsrange()
+ LANGUAGE plpgsql
+ SET search_path TO 'public', 'pg_temp'
+ SET "plpgsql.check_asserts" TO 'true'
+ SET "pg_readme.include_this_routine_definition" TO 'true'
+AS $procedure$
+begin
+    assert make_tsrange('2023-02-21 01:02'::timestamp, '1 day'::interval) = tsrange(
+        '2023-02-21 01:02'::timestamp
+        ,'2023-02-22 01:02'::timestamp
+    );
+    assert make_tsrange('2023-02-21 01:02'::timestamp, '-1 month'::interval) = tsrange(
+        '2023-01-21 01:02'::timestamp
+        ,'2023-02-21 01:02'::timestamp
+    );
+end;
+$procedure$
+```
+
+#### Procedure: `test__make_tstzrange()`
+
+Procedure-local settings:
+
+  *  `SET search_path TO public, pg_temp`
+  *  `SET plpgsql.check_asserts TO true`
+  *  `SET pg_readme.include_this_routine_definition TO true`
+
+```sql
+CREATE OR REPLACE PROCEDURE public.test__make_tstzrange()
+ LANGUAGE plpgsql
+ SET search_path TO 'public', 'pg_temp'
+ SET "plpgsql.check_asserts" TO 'true'
+ SET "pg_readme.include_this_routine_definition" TO 'true'
+AS $procedure$
+begin
+    assert make_tstzrange('2023-02-21 01:02'::timestamptz, '1 day'::interval) = tstzrange(
+        '2023-02-21 01:02'::timestamptz
+        ,'2023-02-22 01:02'::timestamptz
+    );
+    assert make_tstzrange('2023-02-21 01:02'::timestamptz, '-1 month'::interval) = tstzrange(
+        '2023-01-21 01:02'::timestamptz
+        ,'2023-02-21 01:02'::timestamptz
+    );
 end;
 $procedure$
 ```

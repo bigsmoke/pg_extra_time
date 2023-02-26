@@ -7,5 +7,7 @@ call test__extract_days_from_tstzrange();
 call test__extract_days_from_interval();
 call test__modulo__tsttzrange__interval();
 call test__each_subperiod();
+call test__make_tstzrange();
+call test__make_tsrange();
 
 rollback;
