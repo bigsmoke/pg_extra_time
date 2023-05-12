@@ -70,8 +70,4 @@ exception
 end;
 $plpgsql$;
 
-comment on function pg_extra_time_readme() is
-$markdown$Fire up the `pg_readme` extension to generate a thorough README for this extension, based on the `pg_catalog` and the `COMMENT` objects found therein.
-$markdown$;
-
 --------------------------------------------------------------------------------------------------------------
