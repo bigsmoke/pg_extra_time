@@ -1,8 +1,8 @@
 ---
 pg_extension_name: pg_extra_time
-pg_extension_version: 0.7.0
-pg_readme_generated_at: 2023-02-26 19:40:05.887544+00
-pg_readme_version: 0.5.6
+pg_extension_version: 0.7.1
+pg_readme_generated_at: 2023-05-12 15:52:11.106283+01
+pg_readme_version: 0.6.2
 ---
 
 # `pg_extra_time` PostgreSQL extension
@@ -275,7 +275,9 @@ $function$
 
 Returns the JSON meta data that has to go into the `META.json` file needed for PGXN—PostgreSQL Extension Network—packages.
 
-The `Makefile` includes a recipe to allow the developer to: `make META.json` to refresh the meta file with the function's current output, including the `default_version`.
+The `Makefile` includes a recipe to allow the developer to: `make META.json` to
+refresh the meta file with the function's current output, including the
+`default_version`.
 
 `pg_extra_time` can indeed be found on PGXN: https://pgxn.org/dist/pg_readme/
 
@@ -559,12 +561,32 @@ $procedure$
 
 ## Extension origins
 
-`pg_extra_time` was developed to simplify quite a bit of code in the PostgreSQL backend of the [FlashMQ MQTT hosting platform](https://www.flashmq.com/), especially for financial calculations regarding subscription durations, etc..  Datetime calculations are notoriously easy to get wrong, and therefore better to isolate and test well rather than mix into the business logic on an ad hoc basis.
+`pg_extra_time` was developed to simplify quite a bit of code in the PostgreSQL
+backend of the [FlashMQ MQTT hosting platform](https://www.flashmq.com/),
+especially for financial calculations regarding subscription durations, etc..
+Datetime calculations are notoriously easy to get wrong, and therefore better
+to isolate and test well rather than mix into the business logic on an ad hoc
+basis.
 
 ## Extension author(s)
 
-* Rowan Rodrik van der Molen
-  - [@ysosuckysoft](https://twitter.com/ysosuckysoft)
+* Rowan Rodrik van der Molen—the original (and so far only) author of
+  `pg_extra_time`—identifies more as a [restorative farmer, permaculture writer
+  and reanimist](https://sapienshabitat.com) than as a techologist.
+  Nevertheless, computer technology has remained stubbornly intertwined with his
+  life, the trauma of which he tries to process by writing the book on [_Why
+  Programming Still Sucks_](https://www.whyprogrammingstillsucks.com/)
+  ([@ysosuckysoft](https://twitter.com/ysosuckysoft)).  As of 2023, he is
+  applying his painfully earned IT wisdom to a robust [MQTT SaaS
+  service](https://www.flashmq.com/), and he does so alternatingly:
+
+    - from within a permaculture project in central Portugal;
+    - and his beautiful [holiday home for rent in the forests of
+      Drenthe](https://www.schuilplaats-norg.nl/), where from his work place
+      he looks out over his lush ecological garden and a private heather field.
+
+  His day to day [musings on technology](https://blog.bigsmoke.us/) he usually
+  slaps onto his blog.
 
 ## Colophon
 

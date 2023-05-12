@@ -1,4 +1,4 @@
--- Complain if script is sourced in `psql`, rather than via `CREATE EXTENSION`.
+-- Complain if script is sourced in `psql`, rather than via `CREATE EXTENSION`
 \echo Use "CREATE EXTENSION pg_extra_time" to load this file. \quit
 
 --------------------------------------------------------------------------------------------------------------
@@ -13,19 +13,39 @@ The `pg_extra_time` PostgreSQL extension contains some date time functions and o
 
 ## Extension origins
 
-`pg_extra_time` was developed to simplify quite a bit of code in the PostgreSQL backend of the [FlashMQ MQTT hosting platform](https://www.flashmq.com/), especially for financial calculations regarding subscription durations, etc..  Datetime calculations are notoriously easy to get wrong, and therefore better to isolate and test well rather than mix into the business logic on an ad hoc basis.
+`pg_extra_time` was developed to simplify quite a bit of code in the PostgreSQL
+backend of the [FlashMQ MQTT hosting platform](https://www.flashmq.com/),
+especially for financial calculations regarding subscription durations, etc..
+Datetime calculations are notoriously easy to get wrong, and therefore better
+to isolate and test well rather than mix into the business logic on an ad hoc
+basis.
 
 ## Extension author(s)
 
-* Rowan Rodrik van der Molen
-  - [@ysosuckysoft](https://twitter.com/ysosuckysoft)
+* Rowan Rodrik van der Molen—the original (and so far only) author of
+  `pg_extra_time`—identifies more as a [restorative farmer, permaculture writer
+  and reanimist](https://sapienshabitat.com) than as a techologist.
+  Nevertheless, computer technology has remained stubbornly intertwined with his
+  life, the trauma of which he tries to process by writing the book on [_Why
+  Programming Still Sucks_](https://www.whyprogrammingstillsucks.com/)
+  ([@ysosuckysoft](https://twitter.com/ysosuckysoft)).  As of 2023, he is
+  applying his painfully earned IT wisdom to a robust [MQTT SaaS
+  service](https://www.flashmq.com/), and he does so alternatingly:
+
+    - from within a permaculture project in central Portugal;
+    - and his beautiful [holiday home for rent in the forests of
+      Drenthe](https://www.schuilplaats-norg.nl/), where from his work place
+      he looks out over his lush ecological garden and a private heather field.
+
+  His day to day [musings on technology](https://blog.bigsmoke.us/) he usually
+  slaps onto his blog.
 
 <?pg-readme-colophon?>
 $markdown$;
 
 --------------------------------------------------------------------------------------------------------------
 
-create or replace function pg_extra_time_readme()
+create function pg_extra_time_readme()
     returns text
     volatile
     set search_path from current
@@ -37,7 +57,7 @@ create or replace function pg_extra_time_readme()
 declare
     _readme text;
 begin
-    create extension if not exists pg_readme;
+    create extension if not exists pg_readme with cascade;
 
     _readme := pg_extension_readme('pg_extra_time'::name);
 
@@ -54,7 +74,7 @@ $markdown$;
 
 --------------------------------------------------------------------------------------------------------------
 
-create or replace function pg_extra_time_meta_pgxn()
+create function pg_extra_time_meta_pgxn()
     returns jsonb
     stable
     set search_path from current
@@ -100,7 +120,7 @@ create or replace function pg_extra_time_meta_pgxn()
         ,'provides'
         ,('{
             "pg_extra_time": {
-                "file": "pg_extra_time--0.4.0.sql",
+                "file": "pg_extra_time--0.7.1.sql",
                 "version": "' || (
                     select
                         pg_extension.extversion
@@ -146,7 +166,9 @@ create or replace function pg_extra_time_meta_pgxn()
 comment on function pg_extra_time_meta_pgxn() is
 $markdown$Returns the JSON meta data that has to go into the `META.json` file needed for PGXN—PostgreSQL Extension Network—packages.
 
-The `Makefile` includes a recipe to allow the developer to: `make META.json` to refresh the meta file with the function's current output, including the `default_version`.
+The `Makefile` includes a recipe to allow the developer to: `make META.json` to
+refresh the meta file with the function's current output, including the
+`default_version`.
 
 `pg_extra_time` can indeed be found on PGXN: https://pgxn.org/dist/pg_readme/
 $markdown$;
@@ -220,6 +242,8 @@ The function starts with as many of the biggest units given as fit in the dateti
 See the `test__extract_interval()` procedure for examples.
 $markdown$;
 
+--------------------------------------------------------------------------------------------------------------
+
 create function extract_interval(tstzrange)
     returns interval
     returns null on null input
@@ -250,12 +274,16 @@ comment on function extract_interval(tstzrange) is
 $markdown$Extract an interval from a datetime range, starting with the largest interval unit possible, and down to the microsecond.
 $markdown$;
 
+--------------------------------------------------------------------------------------------------------------
+
 create cast (tstzrange as interval)
     with function extract_interval(tstzrange)
     as assignment;
 
 comment on cast (tstzrange as interval) is
 $markdown$Cast a datetime range to the intervals that fit in that range, starting with the largest interval unit possible, and down to the microsecond.$markdown$;
+
+--------------------------------------------------------------------------------------------------------------
 
 create procedure test__extract_interval()
     set pg_readme.include_this_routine_definition to true
@@ -304,6 +332,8 @@ comment on function extract_days(tstzrange) is
 $markdown$Extract the number of whole days from a given `tstzrange` value.
 $markdown$;
 
+--------------------------------------------------------------------------------------------------------------
+
 create cast (tstzrange as integer)
     with function extract_days(tstzrange)
     as assignment;
@@ -311,6 +341,8 @@ create cast (tstzrange as integer)
 comment on cast (tstzrange as integer) is
 $markdown$Extract the number of whole days from a given `tstzrange` value.
 $markdown$;
+
+--------------------------------------------------------------------------------------------------------------
 
 create procedure test__extract_days_from_tstzrange()
     set pg_readme.include_this_routine_definition to true
@@ -341,12 +373,16 @@ create function extract_days(interval)
 comment on function extract_days(interval) is
 $markdown$Extract the number of whole days (rounded down) from a given `interval` value.$markdown$;
 
+--------------------------------------------------------------------------------------------------------------
+
 create cast (interval as integer)
     with function extract_days(interval)
     as assignment;
 
 comment on cast (interval as integer) is
 $markdown$Extract the number of whole days (rounded down) from a given `interval` value.$markdown$;
+
+--------------------------------------------------------------------------------------------------------------
 
 create procedure test__extract_days_from_interval()
     set pg_readme.include_this_routine_definition to true
@@ -381,6 +417,8 @@ comment on function modulo(tstzrange, interval) is
 $markdown$As you would expect from a modulo operator, this function returns the remainder of the given datetime range after dividing it in as many of the given whole intervals as possible.
 $markdown$;
 
+--------------------------------------------------------------------------------------------------------------
+
 create operator % (
     leftarg = tstzrange
     ,rightarg = interval
@@ -391,6 +429,8 @@ create operator % (
 comment on operator % (tstzrange, interval) is
 $markdown$As you would expect from a modulo operator, this function returns the remainder of the given datetime range after dividing it in as many of the given whole intervals as possible.
 $markdown$;
+
+--------------------------------------------------------------------------------------------------------------
 
 create procedure test__modulo__tsttzrange__interval()
     set pg_readme.include_this_routine_definition to true
@@ -442,5 +482,250 @@ begin
     assert date_part_parts('month', 'days', make_date(2024,2,12)) = 29;
 end;
 $$;
+
+--------------------------------------------------------------------------------------------------------------
+
+create function each_subperiod(
+        dividend$ tstzrange
+        ,divisor$ interval
+        ,round_remainder$ int default 0
+    )
+    returns table (
+        quotient tstzrange
+    )
+    immutable
+    leakproof
+    parallel safe
+    language sql
+begin atomic
+    with recursive division(quotient) as (
+        select  tstzrange(
+                    lower(dividend$)
+                    ,case
+                        when sign(round_remainder$) = 1
+                        then lower(dividend$) + divisor$
+                        else least(upper(dividend$),  lower(dividend$) + divisor$)
+                    end
+                )
+        where   sign(round_remainder$) > -1
+                or (lower(dividend$) + divisor$) <= upper(dividend$)
+        union all
+        select  tstzrange(
+                    upper(previous.quotient)
+                    ,case
+                        when sign(round_remainder$) = 1
+                        then upper(previous.quotient) + divisor$
+                        else least(upper(dividend$),  upper(previous.quotient) + divisor$)
+                    end
+                )
+        from    division as previous
+        where   case
+                    when sign(round_remainder$) = -1
+                    then (upper(previous.quotient) + divisor$) <= upper(dividend$)
+                    else upper(previous.quotient) < upper(dividend$)
+                end
+    )
+    select  quotient
+    from    division
+    ;
+end;
+
+comment on function each_subperiod(tstzrange, interval, int) is
+$md$Divide the given `dividend$` into `divisor$`-sized chunks.
+
+The remainder is rounded:
+
+- up, to a complete `divisor$`, if `round_remainder$ >= 1`;
+- down, discarding the remainder, if `round_remainder$ <= 1`; or
+- not at all and kept as the remainder, if `round_remainder = 0`.
+
+See the [`test__each_subperiod`](#routine-test__each_subperiod) routine for
+examples.
+$md$;
+
+--------------------------------------------------------------------------------------------------------------
+
+create procedure test__each_subperiod()
+    set search_path from current
+    set pg_readme.include_this_routine_definition to true
+    language plpgsql
+    as $$
+begin
+    assert (
+            select
+                array_agg(quotient)
+            from
+                each_subperiod('[2023-01-01,2023-04-01)'::tstzrange, '1 month'::interval, 0)
+        ) = '{
+            "[2023-01-01, 2023-02-01)",
+            "[2023-02-01, 2023-03-01)",
+            "[2023-03-01, 2023-04-01)"
+        }'::tstzrange[];
+
+    assert (
+            select
+                array_agg(quotient)
+            from
+                each_subperiod('[2023-01-01,2023-04-02)'::tstzrange, '1 month'::interval, 0)
+        ) = '{
+            "[2023-01-01, 2023-02-01)",
+            "[2023-02-01, 2023-03-01)",
+            "[2023-03-01, 2023-04-01)",
+            "[2023-04-01, 2023-04-02)"
+        }'::tstzrange[];
+
+    assert (
+            select
+                array_agg(quotient)
+            from
+                each_subperiod('[2023-01-01,2023-04-02)'::tstzrange, '1 month'::interval, 1)
+        ) = '{
+            "[2023-01-01, 2023-02-01)",
+            "[2023-02-01, 2023-03-01)",
+            "[2023-03-01, 2023-04-01)",
+            "[2023-04-01, 2023-05-01)"
+        }'::tstzrange[];
+
+    assert (
+            select
+                array_agg(quotient)
+            from
+                each_subperiod('[2023-01-01,2023-01-02)'::tstzrange, '1 month'::interval, 1)
+        ) = '{"[2023-01-01, 2023-02-01)"}'::tstzrange[];
+
+    assert (
+            select
+                array_agg(quotient)
+            from
+                each_subperiod('[2023-01-01,2023-04-02)'::tstzrange, '1 month'::interval, -1)
+        ) = '{
+            "[2023-01-01, 2023-02-01)",
+            "[2023-02-01, 2023-03-01)",
+            "[2023-03-01, 2023-04-01)"
+        }'::tstzrange[];
+
+    assert (
+            select
+                count(*)
+            from
+                each_subperiod('[2023-01-01,2023-01-31)'::tstzrange, '1 month'::interval, -1)
+        ) = 0;
+end;
+$$;
+
+--------------------------------------------------------------------------------------------------------------
+
+create function make_tstzrange(timestamptz, interval, text default '[)')
+    returns tstzrange
+    returns null on null input
+    immutable
+    leakproof
+    parallel safe
+    language sql
+    return case
+        when $2 < interval '0'
+        then tstzrange($1 + $2, $1, $3)
+        else tstzrange($1, $1 + $2, $3)
+    end;
+
+comment on function make_tstzrange(timestamptz, interval, text) is
+$md$Build a `tstzrange` from a given timestamp from or until the given interval.
+
+This function will do the right thing when confronted with negative intervals.
+
+The function name is chosen for consistency with (some of) PostgreSQL built-in
+date/time functions.  I would have preferred to call it plainly `tstzrange()`,
+but that would require users of this extensions to have to become explicit when
+calling the existing `tsrange(text)` constructor while relying on an explicit
+cast of `unknown` to `text`.
+$md$;
+
+--------------------------------------------------------------------------------------------------------------
+
+create procedure test__make_tstzrange()
+    set search_path from current
+    set plpgsql.check_asserts to true
+    set pg_readme.include_this_routine_definition to true
+    language plpgsql
+    as $$
+begin
+    assert make_tstzrange('2023-02-21 01:02'::timestamptz, '1 day'::interval) = tstzrange(
+        '2023-02-21 01:02'::timestamptz
+        ,'2023-02-22 01:02'::timestamptz
+    );
+    assert make_tstzrange('2023-02-21 01:02'::timestamptz, '-1 month'::interval) = tstzrange(
+        '2023-01-21 01:02'::timestamptz
+        ,'2023-02-21 01:02'::timestamptz
+    );
+end;
+$$;
+
+--------------------------------------------------------------------------------------------------------------
+
+create function make_tsrange(timestamp, interval, text default '[)')
+    returns tsrange
+    returns null on null input
+    immutable
+    leakproof
+    parallel safe
+    language sql
+    return case
+        when $2 < interval '0'
+        then tsrange($1 + $2, $1, $3)
+        else tsrange($1, $1 + $2, $3)
+    end;
+
+comment on function make_tsrange(timestamp, interval, text) is
+$md$Build a `tsrange` from a given timestamp from or until the given interval.
+
+This function will do the right thing when confronted with negative intervals.
+
+The function name is chosen for consistency with (some of) PostgreSQL built-in
+date/time functions.  I would have preferred to call it plainly `tsrange()`,
+but that would require users of this extensions to have to become explicit when
+calling the existing `tsrange(text)` constructor while relying on an explicit
+cast of `unknown` to `text`.
+$md$;
+
+--------------------------------------------------------------------------------------------------------------
+
+create procedure test__make_tsrange()
+    set search_path from current
+    set plpgsql.check_asserts to true
+    set pg_readme.include_this_routine_definition to true
+    language plpgsql
+    as $$
+begin
+    assert make_tsrange('2023-02-21 01:02'::timestamp, '1 day'::interval) = tsrange(
+        '2023-02-21 01:02'::timestamp
+        ,'2023-02-22 01:02'::timestamp
+    );
+    assert make_tsrange('2023-02-21 01:02'::timestamp, '-1 month'::interval) = tsrange(
+        '2023-01-21 01:02'::timestamp
+        ,'2023-02-21 01:02'::timestamp
+    );
+end;
+$$;
+
+--------------------------------------------------------------------------------------------------------------
+
+create function current_timezone()
+    returns pg_catalog.pg_timezone_names
+    stable
+    parallel safe
+    set pg_readme.include_this_routine_definition to true
+    language sql
+    return (
+        select
+            row(pg_timezone_names.*)::pg_catalog.pg_timezone_names
+        from
+            pg_catalog.pg_timezone_names
+        where
+            pg_timezone_names.name = current_setting('timezone')
+    );
+
+comment on function current_timezone() is
+$md$Returns a `pg_timezone_names` record with the currently active timezone.
+$md$;
 
 --------------------------------------------------------------------------------------------------------------
