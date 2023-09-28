@@ -1,8 +1,8 @@
 ---
 pg_extension_name: pg_extra_time
-pg_extension_version: 0.7.1
-pg_readme_generated_at: 2023-05-12 15:52:11.106283+01
-pg_readme_version: 0.6.2
+pg_extension_version: 1.0.0
+pg_readme_generated_at: 2023-09-28 23:20:12.815512+01
+pg_readme_version: 0.6.4
 ---
 
 # `pg_extra_time` PostgreSQL extension
