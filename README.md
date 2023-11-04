@@ -1,7 +1,7 @@
 ---
 pg_extension_name: pg_extra_time
-pg_extension_version: 1.0.0
-pg_readme_generated_at: 2023-09-28 23:20:12.815512+01
+pg_extension_version: 1.1.0
+pg_readme_generated_at: 2023-11-04 16:00:37.618406+00
 pg_readme_version: 0.6.4
 ---
 
@@ -237,6 +237,34 @@ Function return type: `tstzrange`
 
 Function attributes: `IMMUTABLE`, `LEAKPROOF`, `RETURNS NULL ON NULL INPUT`, `PARALLEL SAFE`
 
+#### Function: `modulo (interval, interval)`
+
+As one would expect from a modulo operator, this function returns the remainder of the first given interval after dividing it into as many of the intervals given in the second argument as possible.
+
+Function arguments:
+
+| Arg. # | Arg. mode  | Argument name                                                     | Argument type                                                        | Default expression  |
+| ------ | ---------- | ----------------------------------------------------------------- | -------------------------------------------------------------------- | ------------------- |
+|   `$1` |       `IN` |                                                                   | `interval`                                                           |  |
+|   `$2` |       `IN` |                                                                   | `interval`                                                           |  |
+
+Function return type: `interval`
+
+Function attributes: `IMMUTABLE`, `LEAKPROOF`, `PARALLEL SAFE`
+
+Function-local settings:
+
+  *  `SET pg_readme.include_this_routine_definition TO true`
+
+```sql
+CREATE OR REPLACE FUNCTION public.modulo(interval, interval)
+ RETURNS interval
+ LANGUAGE sql
+ IMMUTABLE PARALLEL SAFE LEAKPROOF
+ SET "pg_readme.include_this_routine_definition" TO 'true'
+RETURN ((to_timestamp((0)::double precision) + $1) - date_bin($2, (to_timestamp((0)::double precision) + $1), to_timestamp((0)::double precision)))
+```
+
 #### Function: `modulo (tstzrange, interval)`
 
 As you would expect from a modulo operator, this function returns the remainder of the given datetime range after dividing it in as many of the given whole intervals as possible.
@@ -285,10 +313,6 @@ Function return type: `jsonb`
 
 Function attributes: `STABLE`
 
-Function-local settings:
-
-  *  `SET search_path TO public, pg_temp`
-
 #### Function: `pg_extra_time_readme()`
 
 Fire up the `pg_readme` extension to generate a thorough README for this extension, based on the `pg_catalog` and the `COMMENT` objects found therein.
@@ -297,7 +321,6 @@ Function return type: `text`
 
 Function-local settings:
 
-  *  `SET search_path TO public, pg_temp`
   *  `SET pg_readme.include_view_definitions TO true`
   *  `SET pg_readme.include_routine_definitions_like TO {test__%}`
   *  `SET pg_readme.readme_url TO https://github.com/bigsmoke/pg_extra_time/blob/master/README.md`
@@ -327,13 +350,11 @@ $procedure$
 
 Procedure-local settings:
 
-  *  `SET search_path TO public, pg_temp`
   *  `SET pg_readme.include_this_routine_definition TO true`
 
 ```sql
 CREATE OR REPLACE PROCEDURE public.test__each_subperiod()
  LANGUAGE plpgsql
- SET search_path TO 'public', 'pg_temp'
  SET "pg_readme.include_this_routine_definition" TO 'true'
 AS $procedure$
 begin
@@ -488,14 +509,12 @@ $procedure$
 
 Procedure-local settings:
 
-  *  `SET search_path TO public, pg_temp`
   *  `SET plpgsql.check_asserts TO true`
   *  `SET pg_readme.include_this_routine_definition TO true`
 
 ```sql
 CREATE OR REPLACE PROCEDURE public.test__make_tsrange()
  LANGUAGE plpgsql
- SET search_path TO 'public', 'pg_temp'
  SET "plpgsql.check_asserts" TO 'true'
  SET "pg_readme.include_this_routine_definition" TO 'true'
 AS $procedure$
@@ -516,14 +535,12 @@ $procedure$
 
 Procedure-local settings:
 
-  *  `SET search_path TO public, pg_temp`
   *  `SET plpgsql.check_asserts TO true`
   *  `SET pg_readme.include_this_routine_definition TO true`
 
 ```sql
 CREATE OR REPLACE PROCEDURE public.test__make_tstzrange()
  LANGUAGE plpgsql
- SET search_path TO 'public', 'pg_temp'
  SET "plpgsql.check_asserts" TO 'true'
  SET "pg_readme.include_this_routine_definition" TO 'true'
 AS $procedure$
@@ -536,6 +553,27 @@ begin
         '2023-01-21 01:02'::timestamptz
         ,'2023-02-21 01:02'::timestamptz
     );
+end;
+$procedure$
+```
+
+#### Procedure: `test__modulo__interval__interval()`
+
+Procedure-local settings:
+
+  *  `SET pg_readme.include_this_routine_definition TO true`
+  *  `SET plpgsql.check_asserts TO true`
+
+```sql
+CREATE OR REPLACE PROCEDURE public.test__modulo__interval__interval()
+ LANGUAGE plpgsql
+ SET "pg_readme.include_this_routine_definition" TO 'true'
+ SET "plpgsql.check_asserts" TO 'true'
+AS $procedure$
+begin
+    assert ('8 days 3 seconds'::interval % '2 days'::interval) = interval '3 seconds';
+    assert ('9 days 3 seconds'::interval % '2 days'::interval) = interval '1 day 3 seconds';
+    assert ('30 days'::interval % '10 days'::interval) = interval '0';
 end;
 $procedure$
 ```
