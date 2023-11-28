@@ -1,7 +1,7 @@
 ---
 pg_extension_name: pg_extra_time
-pg_extension_version: 1.1.0
-pg_readme_generated_at: 2023-11-04 16:00:37.618406+00
+pg_extension_version: 1.1.1
+pg_readme_generated_at: 2023-11-28 15:37:24.818377+00
 pg_readme_version: 0.6.4
 ---
 
