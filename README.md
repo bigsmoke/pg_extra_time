@@ -1,8 +1,8 @@
 ---
 pg_extension_name: pg_extra_time
-pg_extension_version: 1.1.1
-pg_readme_generated_at: 2023-11-28 15:37:24.818377+00
-pg_readme_version: 0.6.4
+pg_extension_version: 1.1.2
+pg_readme_generated_at: 2023-12-21 18:05:22.318575+00
+pg_readme_version: 0.6.5
 ---
 
 # `pg_extra_time` PostgreSQL extension
@@ -241,6 +241,13 @@ Function attributes: `IMMUTABLE`, `LEAKPROOF`, `RETURNS NULL ON NULL INPUT`, `PA
 
 As one would expect from a modulo operator, this function returns the remainder of the first given interval after dividing it into as many of the intervals given in the second argument as possible.
 
+This function ignores the sign of the second argument.  The sign of the first
+argument is preserved.  To take the absolute (intermediate) value of both
+arguments, `greatest(interval, -interval)` is used.  According to some, this
+[_might_](https://www.postgresql.org/message-id/flat/5ccd53c10910270727m5bf6d4adoa9424f49a397ca5e%40mail.gmail.com)
+be a too simplistic approach, but the extension author (Rowan) is of the
+opinion that that's okay in this context.
+
 Function arguments:
 
 | Arg. # | Arg. mode  | Argument name                                                     | Argument type                                                        | Default expression  |
@@ -262,7 +269,7 @@ CREATE OR REPLACE FUNCTION public.modulo(interval, interval)
  LANGUAGE sql
  IMMUTABLE PARALLEL SAFE LEAKPROOF
  SET "pg_readme.include_this_routine_definition" TO 'true'
-RETURN ((to_timestamp((0)::double precision) + $1) - date_bin($2, (to_timestamp((0)::double precision) + $1), to_timestamp((0)::double precision)))
+RETURN ((sign(EXTRACT(epoch FROM $1)))::double precision * ((to_timestamp((0)::double precision) + GREATEST($1, (- $1))) - date_bin(GREATEST($2, (- $2)), (to_timestamp((0)::double precision) + GREATEST($1, (- $1))), to_timestamp((0)::double precision))))
 ```
 
 #### Function: `modulo (tstzrange, interval)`
@@ -574,6 +581,12 @@ begin
     assert ('8 days 3 seconds'::interval % '2 days'::interval) = interval '3 seconds';
     assert ('9 days 3 seconds'::interval % '2 days'::interval) = interval '1 day 3 seconds';
     assert ('30 days'::interval % '10 days'::interval) = interval '0';
+    assert ('-10 days'::interval % '1 day'::interval) = interval '0',
+        format('%L ≠ %L', '-10 days'::interval % '1 day'::interval, '@ 00:00:00');
+    assert ('-10 days -4 hours'::interval % '1 day'::interval) = interval '-4 hours',
+        format('%L ≠ %L', '-10 days 4 hours'::interval % '1 day'::interval, '@ -4 hours');
+    assert ('28 days'::interval % '-7 days'::interval) = interval '0 seconds';
+    assert ('29 hours'::interval % '-7 hours'::interval) = interval '1 hour';
 end;
 $procedure$
 ```
