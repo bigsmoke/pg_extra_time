@@ -1,5 +1,6 @@
 \set ECHO none
 NOTICE:  CREATE EXTENSION pg_extra_time WITH VERSION '1.1.1' CASCADE
+NOTICE:  ALTER EXTENSION pg_extra_time UPDATE TO '1.1.3'
 NOTICE:  CALL test__extract_interval()
 NOTICE:  CALL test__extract_days_from_tstzrange()
 NOTICE:  CALL test__extract_days_from_interval()
@@ -11,7 +12,7 @@ NOTICE:  CALL test__make_tstzrange()
 NOTICE:  CALL test__make_tsrange()
 NOTICE:  DROP EXTENSION pg_extra_time CASCADE
 NOTICE:  CREATE EXTENSION pg_extra_time WITH VERSION '0.7.1' CASCADE
-NOTICE:  ALTER EXTENSION pg_extra_time UPDATE TO '1.1.1'
+NOTICE:  ALTER EXTENSION pg_extra_time UPDATE TO '1.1.3'
 NOTICE:  CALL test__extract_interval()
 NOTICE:  CALL test__extract_days_from_tstzrange()
 NOTICE:  CALL test__extract_days_from_interval()
@@ -22,8 +23,20 @@ NOTICE:  CALL test__make_tstzrange()
 NOTICE:  CALL test__make_tsrange()
 NOTICE:  CALL test__modulo__interval__interval()
 NOTICE:  DROP EXTENSION pg_extra_time CASCADE
+NOTICE:  CREATE EXTENSION pg_extra_time WITH VERSION '1.1.2' CASCADE
+NOTICE:  ALTER EXTENSION pg_extra_time UPDATE TO '1.1.3'
+NOTICE:  CALL test__extract_interval()
+NOTICE:  CALL test__extract_days_from_tstzrange()
+NOTICE:  CALL test__extract_days_from_interval()
+NOTICE:  CALL test__modulo__tsttzrange__interval()
+NOTICE:  CALL test__modulo__interval__interval()
+NOTICE:  CALL test__date_part_parts()
+NOTICE:  CALL test__each_subperiod()
+NOTICE:  CALL test__make_tstzrange()
+NOTICE:  CALL test__make_tsrange()
+NOTICE:  DROP EXTENSION pg_extra_time CASCADE
 NOTICE:  CREATE EXTENSION pg_extra_time WITH VERSION '1.1.0' CASCADE
-NOTICE:  ALTER EXTENSION pg_extra_time UPDATE TO '1.1.1'
+NOTICE:  ALTER EXTENSION pg_extra_time UPDATE TO '1.1.3'
 NOTICE:  CALL test__extract_interval()
 NOTICE:  CALL test__extract_days_from_tstzrange()
 NOTICE:  CALL test__extract_days_from_interval()
@@ -35,7 +48,7 @@ NOTICE:  CALL test__make_tstzrange()
 NOTICE:  CALL test__make_tsrange()
 NOTICE:  DROP EXTENSION pg_extra_time CASCADE
 NOTICE:  CREATE EXTENSION pg_extra_time WITH VERSION '1.0.0' CASCADE
-NOTICE:  ALTER EXTENSION pg_extra_time UPDATE TO '1.1.1'
+NOTICE:  ALTER EXTENSION pg_extra_time UPDATE TO '1.1.3'
 NOTICE:  CALL test__extract_interval()
 NOTICE:  CALL test__extract_days_from_tstzrange()
 NOTICE:  CALL test__extract_days_from_interval()
@@ -47,7 +60,7 @@ NOTICE:  CALL test__make_tsrange()
 NOTICE:  CALL test__modulo__interval__interval()
 NOTICE:  DROP EXTENSION pg_extra_time CASCADE
 NOTICE:  CREATE EXTENSION pg_extra_time WITH VERSION '0.4.0' CASCADE
-NOTICE:  ALTER EXTENSION pg_extra_time UPDATE TO '1.1.1'
+NOTICE:  ALTER EXTENSION pg_extra_time UPDATE TO '1.1.3'
 NOTICE:  CALL test__extract_interval()
 NOTICE:  CALL test__extract_days_from_tstzrange()
 NOTICE:  CALL test__extract_days_from_interval()
@@ -57,4 +70,15 @@ NOTICE:  CALL test__each_subperiod()
 NOTICE:  CALL test__make_tstzrange()
 NOTICE:  CALL test__make_tsrange()
 NOTICE:  CALL test__modulo__interval__interval()
+NOTICE:  DROP EXTENSION pg_extra_time CASCADE
+NOTICE:  CREATE EXTENSION pg_extra_time WITH VERSION '1.1.3' CASCADE
+NOTICE:  CALL test__extract_interval()
+NOTICE:  CALL test__extract_days_from_tstzrange()
+NOTICE:  CALL test__extract_days_from_interval()
+NOTICE:  CALL test__modulo__tsttzrange__interval()
+NOTICE:  CALL test__modulo__interval__interval()
+NOTICE:  CALL test__date_part_parts()
+NOTICE:  CALL test__each_subperiod()
+NOTICE:  CALL test__make_tstzrange()
+NOTICE:  CALL test__make_tsrange()
 NOTICE:  DROP EXTENSION pg_extra_time CASCADE

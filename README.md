@@ -1,8 +1,8 @@
 ---
 pg_extension_name: pg_extra_time
-pg_extension_version: 1.1.2
-pg_readme_generated_at: 2023-12-21 18:05:22.318575+00
-pg_readme_version: 0.6.5
+pg_extension_version: 1.1.3
+pg_readme_generated_at: 2024-05-23 09:38:10.785396+00
+pg_readme_version: 0.6.6
 ---
 
 # `pg_extra_time` PostgreSQL extension
@@ -83,10 +83,10 @@ Divide the given `dividend$` into `divisor$`-sized chunks.
 The remainder is rounded:
 
 - up, to a complete `divisor$`, if `round_remainder$ >= 1`;
-- down, discarding the remainder, if `round_remainder$ <= 1`; or
+- down, discarding the remainder, if `round_remainder$ <= -1`; or
 - not at all and kept as the remainder, if `round_remainder = 0`.
 
-See the [`test__each_subperiod`](#routine-test__each_subperiod) routine for
+See the [`test__each_subperiod`](#procedure-test__each_subperiod) routine for
 examples.
 
 Function arguments:
