@@ -3,6 +3,9 @@
 
 --------------------------------------------------------------------------------------------------------------
 
+-- CHANGELOG.md:
+-- - Improved documentation of `each_subperiod(tstzrange, interval, int)`
+--   function.
 comment on function each_subperiod(tstzrange, interval, int) is
 $md$Divide the given `dividend$` into `divisor$`-sized chunks.
 

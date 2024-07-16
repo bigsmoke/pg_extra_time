@@ -3,6 +3,14 @@
 
 --------------------------------------------------------------------------------------------------------------
 
+/**
+ * CHANGELOG.md:
+ *
+ * - The new `each_subperiod()` function divides a given `tstzrange` into given
+ *   `interval`-sized chunks, with the remainder either rounded up down or
+ *   discarded (depending on the third argument, which defaults to cutting the
+ *   remainder off).
+ */
 create function each_subperiod(
         dividend$ tstzrange
         ,divisor$ interval

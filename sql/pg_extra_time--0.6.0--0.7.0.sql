@@ -3,6 +3,13 @@
 
 --------------------------------------------------------------------------------------------------------------
 
+/**
+ * CHANGELOG.md:
+ *
+ * - The new `make_tstzrange()` function constructs a `tstzrange` value
+ *   spanning from the given `timestamp with time zone` until that time plus
+ *   the given `interval`.
+ */
 create function make_tstzrange(timestamptz, interval, text default '[)')
     returns tstzrange
     returns null on null input
@@ -50,6 +57,12 @@ $$;
 
 --------------------------------------------------------------------------------------------------------------
 
+/**
+ * CHANGELOG.md:
+ * - Similarly, the new `make_tsrange()` function can be used to construct
+ *   a `tsrange` spanning from a given `timestamp without time zone`
+ *   instead of a naive `timestamp`.
+ */
 create function make_tsrange(timestamp, interval, text default '[)')
     returns tsrange
     returns null on null input

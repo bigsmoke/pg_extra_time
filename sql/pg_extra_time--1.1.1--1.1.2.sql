@@ -3,7 +3,9 @@
 
 --------------------------------------------------------------------------------------------------------------
 
--- Deal better with negative intervals.
+-- CHANGELOG.md:
+-- - Deal better with negative intervals in the `modulo(interval, interval)`
+--   function and it's associated `interval % interval` operator.
 create or replace function modulo(interval, interval)
     returns interval
     language sql
@@ -18,7 +20,9 @@ create or replace function modulo(interval, interval)
         )
     );
 
--- Explain signedness behavior.
+-- CHANGELOG.md:
+-- - Improved explanation of signedness behavior of said `modulo(interval,
+--   interval)` function.
 comment on function modulo(interval, interval) is
 $md$As one would expect from a modulo operator, this function returns the remainder of the first given interval after dividing it into as many of the intervals given in the second argument as possible.
 
@@ -32,7 +36,8 @@ $md$;
 
 --------------------------------------------------------------------------------------------------------------
 
--- Add tests for negative intervals.
+-- CHANGELOG.md:
+-- - Add tests for negative intervals.
 create or replace procedure test__modulo__interval__interval()
     set pg_readme.include_this_routine_definition to true
     set plpgsql.check_asserts to true

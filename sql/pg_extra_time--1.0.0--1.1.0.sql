@@ -3,8 +3,10 @@
 
 --------------------------------------------------------------------------------------------------------------
 
--- Routines should not be bound to the installation time `search_path`, because this extension is marked
--- as `relocatable`.
+-- CHANGELOG.md:
+-- - Got rid of installation time `search_path` settings bound to routines,
+--   because the `pg_extra_time` extension is marked as `relocatable` and
+--   should make no assumptions about where objects are located.
 
 alter function pg_extra_time_readme()
     reset search_path;
@@ -30,6 +32,10 @@ $markdown$;
 
 --------------------------------------------------------------------------------------------------------------
 
+-- CHANGELOG.md:
+-- - The new `modulo(interval, interval)` function returns the remainder of the
+--   first given interval after dividing it into as many of the intervals given
+--   in the second argument as possible.
 create function modulo(interval, interval)
     returns interval
     language sql
@@ -47,6 +53,11 @@ $md$;
 
 --------------------------------------------------------------------------------------------------------------
 
+/**
+ * CHANGELOG.md:
+ * - In addition, the new `interval % interval` (modulo) operator allows
+ *   intuitive usage of that new `modulo(interval, interval)` function.
+ */
 create operator % (
     leftarg = interval
     ,rightarg = interval

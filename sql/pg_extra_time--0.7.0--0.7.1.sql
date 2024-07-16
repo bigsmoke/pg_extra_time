@@ -3,7 +3,9 @@
 
 --------------------------------------------------------------------------------------------------------------
 
--- Extend author section.
+
+-- CHANGELOG.md:
+-- - Extended author section in `README.md`.
 comment on extension pg_extra_time is
 $markdown$
 # `pg_extra_time` PostgreSQL extension
@@ -46,7 +48,9 @@ $markdown$;
 
 --------------------------------------------------------------------------------------------------------------
 
--- Add `WITH CASCADE` option to `CREATE EXTENSION` statement.
+-- CHANGELOG.md:
+-- - Add `WITH CASCADE` option to `CREATE EXTENSION` statement when temporarily
+--   installing `pg_readme` extension during `README.md` generation.
 create or replace function pg_extra_time_readme()
     returns text
     volatile
