@@ -268,7 +268,7 @@ for file in "${files[@]}"; do
     release_date="$update_script_release_date"
     if [[ -z "$release_date" ]]; then
         git_version_tag_name="$(echo "$GIT_TAG_TEMPLATE" | sed -e "s/%v/$version/")"
-        release_date="$(git log -1 --format=%as "$git_version_tag_name" 2>/dev/null)"
+        release_date="$(git log -1 --format=%cs "$git_version_tag_name" 2>/dev/null)"
     fi
 
     if [[ -n "$from_version" ]]; then

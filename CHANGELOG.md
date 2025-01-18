@@ -17,7 +17,7 @@ up-to-date `CHANGELOG.md` file can be generated).
 
 ---
 
-## [2.0.0] – 2024-07-16
+## [2.0.0] – 2025-01-18
 
 [2.0.0]: https://github.com/bigsmoke/pg_extra_time/compare/v1.1.3…v2.0.0
 
